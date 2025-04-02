@@ -12,6 +12,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 
@@ -25,24 +26,33 @@ public class Main {
         XSSFSheet sheet = workbook.getSheetAt(0);
         CreationHelper createHelper = workbook.getCreationHelper();
 
-        for(int j = 1; j < 4; j ++){
-            for(int i = 1; i < 14; i++) {
+        for(int j = 2; j < 4; j ++){
+            for(int i = 0; i < sheet.getPhysicalNumberOfRows(); i++) {
                 Row initRow = sheet.getRow(i);
-                Row row = sheet.createRow(5 + 3*i);
 
-                System.out.println(initRow.getCell(j).getStringCellValue());
                 switch (initRow.getCell(j).getCellType()) {
                     case STRING:
-                        row.createCell(j).setCellValue(createHelper.createRichTextString(initRow.getCell(j).getStringCellValue()));
+                        System.out.println(createHelper.createRichTextString(initRow.getCell(j).getStringCellValue()));
+                        Cell cell0 = initRow.createCell(j*3 + 3);
+                        Cell cell1 = initRow.createCell(j*3 + 4);
+                        cell0.setCellValue(initRow.getCell(1).getStringCellValue());
+                        cell1.setCellValue(createHelper.createRichTextString(initRow.getCell(j).getStringCellValue()));
                         break;
 
                     case NUMERIC:
-                        row.createCell(j).setCellValue(initRow.getCell(j).getNumericCellValue());
+                        System.out.println(initRow.getCell(j).getNumericCellValue());
+                        Cell cell2 = initRow.createCell(j*3 + 3);
+                        Cell cell3 = initRow.createCell(j*3 + 4);
+                        cell2.setCellValue(initRow.getCell(1).getStringCellValue());
+                        cell3.setCellValue(initRow.getCell(j).getNumericCellValue());
                         break;
                 }
             }
         }
 
+        FileOutputStream out = new FileOutputStream("src/main/resources/newspreadsheet.xlsx");
+        workbook.write(out);
+        out.close();
 
     }
 
